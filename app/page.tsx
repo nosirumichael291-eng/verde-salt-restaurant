@@ -1,3 +1,4 @@
+import Navbar from '@/components/Navbar'
 import { prisma } from '@/lib/prisma'
 
 export default async function HomePage() {
@@ -8,6 +9,9 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-cream">
+      {/* Navbar */}
+      <Navbar />
+
       {/* Hero Section */}
       <div className="bg-charcoal/90 text-white py-20 px-4 text-center">
         <h1 className="text-4xl md:text-6xl font-bold font-serif">
@@ -30,7 +34,7 @@ export default async function HomePage() {
               key={item.id} 
               className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
-              {/* ✅ IMAGE DISPLAY - FIXED! */}
+              {/* Image */}
               {item.imageUrl && (
                 <img 
                   src={item.imageUrl} 
