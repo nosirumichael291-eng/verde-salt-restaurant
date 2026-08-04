@@ -30,7 +30,7 @@ export default async function HomePage() {
               key={item.id} 
               className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
-              {/* ✅ IMAGE DISPLAY - THIS IS WHAT WAS MISSING! */}
+              {/* ✅ IMAGE DISPLAY - FIXED! */}
               {item.imageUrl ? (
                 <img 
                   src={item.imageUrl} 
