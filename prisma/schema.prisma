@@ -18,7 +18,8 @@ model Restaurant {
   maxCapacity   Int       @default(100)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
+  // Reverse relations
   tables        Table[]
   menuItems     MenuItem[]
   reservations  Reservation[]
@@ -33,10 +34,11 @@ model Table {
   isAvailable   Boolean   @default(true)
   section       String?
   restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
+  // Relations
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
   reservations  Reservation[]
 }
 
@@ -54,10 +56,11 @@ model MenuItem {
   preparationTime Int?
   calories      Int?
   allergens     Allergen[]
+  restaurantId  String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
-  restaurantId  String
+
+  // Relations
   restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
   orderItems    OrderItem[]
 }
@@ -97,23 +100,25 @@ enum Allergen {
 }
 
 model Reservation {
-  id            String    @id @default(cuid())
-  date          DateTime
-  time          String
-  partySize     Int
-  customerName  String
-  customerEmail String
-  customerPhone String
+  id              String    @id @default(cuid())
+  date            DateTime
+  time            String
+  partySize       Int
+  customerName    String
+  customerEmail   String
+  customerPhone   String
   specialRequests String?
-  status        ReservationStatus @default(PENDING)
-  tableId       String?
-  table         Table?    @relation(fields: [tableId], references: [id])
-  userId        String?
-  user          User?     @relation(fields: [userId], references: [id])
-  restaurantId  String
+  status          ReservationStatus @default(PENDING)
+  tableId         String?
+  userId          String?
+  restaurantId    String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  table         Table?     @relation(fields: [tableId], references: [id])
+  user          User?      @relation(fields: [userId], references: [id])
   restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
 }
 
 enum ReservationStatus {
@@ -136,10 +141,11 @@ model Order {
   tip           Float?
   specialInstructions String?
   userId        String?
-  user          User?     @relation(fields: [userId], references: [id])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
+  // Relations
+  user          User?     @relation(fields: [userId], references: [id])
   items         OrderItem[]
 }
 
@@ -165,22 +171,26 @@ model OrderItem {
   totalPrice    Float
   specialInstructions String?
   menuItemId    String
-  menuItem      MenuItem  @relation(fields: [menuItemId], references: [id])
   orderId       String
-  order         Order     @relation(fields: [orderId], references: [id])
   createdAt     DateTime  @default(now())
+
+  // Relations
+  menuItem      MenuItem  @relation(fields: [menuItemId], references: [id])
+  order         Order     @relation(fields: [orderId], references: [id])
 }
 
 model Review {
   id            String    @id @default(cuid())
-  rating        Int
+  rating        Int       // Removed @min/@max as they are not valid Prisma attributes
   comment       String?
   userId        String
-  user          User      @relation(fields: [userId], references: [id])
   restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id])
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
 }
 
 model Waitlist {
@@ -191,11 +201,13 @@ model Waitlist {
   estimatedWait Int
   status        WaitlistStatus @default(WAITING)
   userId        String?
-  user          User?     @relation(fields: [userId], references: [id])
   restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user          User?     @relation(fields: [userId], references: [id])
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
 }
 
 enum WaitlistStatus {
@@ -213,7 +225,8 @@ model User {
   role          Role      @default(CUSTOMER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  
+
+  // Reverse relations
   reservations  Reservation[]
   orders        Order[]
   reviews       Review[]
