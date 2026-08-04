@@ -19,11 +19,11 @@ model Restaurant {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  menuItems MenuItem[]
-  tables    Table[]
+  menuItems    MenuItem[]
+  tables       Table[]
   reservations Reservation[]
-  reviews   Review[]
-  waitlists Waitlist[]
+  reviews      Review[]
+  waitlists    Waitlist[]
 }
 
 model Table {
@@ -36,7 +36,7 @@ model Table {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
   reservations Reservation[]
 }
 
@@ -55,7 +55,8 @@ model MenuItem {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  orderItems   OrderItem[] // ✅ ADDED THIS - FIXES THE ERROR!
 }
 
 model Reservation {
