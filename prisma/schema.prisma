@@ -171,7 +171,7 @@ model OrderItem {
 
 model Review {
   id            String    @id @default(cuid())
-  rating        Int       @min(1) @max(5)
+  rating        Int
   comment       String?
   userId        String
   user          User      @relation(fields: [userId], references: [id])
