@@ -19,7 +19,6 @@ model Restaurant {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Reverse relations
   tables        Table[]
   menuItems     MenuItem[]
   reservations  Reservation[]
@@ -37,7 +36,6 @@ model Table {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Relations
   restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
   reservations  Reservation[]
 }
@@ -47,56 +45,21 @@ model MenuItem {
   name          String
   description   String?
   price         Float
-  category      MenuCategory
-  dietaryTags   DietaryTag[]
+  category      String    // Changed to String to avoid enum issues
+  dietaryTags   String[]  // Changed to String[] for array support
   isAvailable   Boolean   @default(true)
   isPopular     Boolean   @default(false)
   isChefSpecial Boolean   @default(false)
   imageUrl      String?
   preparationTime Int?
   calories      Int?
-  allergens     Allergen[]
+  allergens     String[]  // Changed to String[] for array support
   restaurantId  String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Relations
   restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
   orderItems    OrderItem[]
-}
-
-enum MenuCategory {
-  STARTERS
-  SALADS
-  MAINS
-  PASTA
-  SEAFOOD
-  GRILL
-  DESSERTS
-  DRINKS
-  WINE
-  COCKTAILS
-}
-
-enum DietaryTag {
-  VEGAN
-  VEGETARIAN
-  GLUTEN_FREE
-  KETO
-  DAIRY_FREE
-  NUT_FREE
-}
-
-enum Allergen {
-  GLUTEN
-  DAIRY
-  EGGS
-  FISH
-  SHELLFISH
-  PEANUTS
-  TREE_NUTS
-  SOY
-  SESAME
 }
 
 model Reservation {
@@ -108,33 +71,23 @@ model Reservation {
   customerEmail   String
   customerPhone   String
   specialRequests String?
-  status          ReservationStatus @default(PENDING)
+  status          String    @default("PENDING")
   tableId         String?
   userId          String?
   restaurantId    String
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  // Relations
   table         Table?     @relation(fields: [tableId], references: [id])
   user          User?      @relation(fields: [userId], references: [id])
   restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
 }
 
-enum ReservationStatus {
-  PENDING
-  CONFIRMED
-  SEATED
-  COMPLETED
-  CANCELLED
-  NO_SHOW
-}
-
 model Order {
   id            String    @id @default(cuid())
   orderNumber   String    @unique
-  type          OrderType
-  status        OrderStatus @default(PENDING)
+  type          String
+  status        String    @default("PENDING")
   subtotal      Float
   tax           Float
   total         Float
@@ -144,24 +97,8 @@ model Order {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Relations
   user          User?     @relation(fields: [userId], references: [id])
   items         OrderItem[]
-}
-
-enum OrderType {
-  DINE_IN
-  TAKEAWAY
-  DELIVERY
-}
-
-enum OrderStatus {
-  PENDING
-  CONFIRMED
-  PREPARING
-  READY
-  COMPLETED
-  CANCELLED
 }
 
 model OrderItem {
@@ -174,21 +111,19 @@ model OrderItem {
   orderId       String
   createdAt     DateTime  @default(now())
 
-  // Relations
   menuItem      MenuItem  @relation(fields: [menuItemId], references: [id])
   order         Order     @relation(fields: [orderId], references: [id])
 }
 
 model Review {
   id            String    @id @default(cuid())
-  rating        Int       // Removed @min/@max as they are not valid Prisma attributes
+  rating        Int
   comment       String?
   userId        String
   restaurantId  String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Relations
   user          User      @relation(fields: [userId], references: [id])
   restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
 }
@@ -199,21 +134,14 @@ model Waitlist {
   phone         String
   partySize     Int
   estimatedWait Int
-  status        WaitlistStatus @default(WAITING)
+  status        String    @default("WAITING")
   userId        String?
   restaurantId  String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Relations
   user          User?     @relation(fields: [userId], references: [id])
   restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
-}
-
-enum WaitlistStatus {
-  WAITING
-  SEATED
-  CANCELLED
 }
 
 model User {
@@ -222,20 +150,12 @@ model User {
   password      String?
   name          String
   phone         String?
-  role          Role      @default(CUSTOMER)
+  role          String    @default("CUSTOMER")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Reverse relations
   reservations  Reservation[]
   orders        Order[]
   reviews       Review[]
   waitlists     Waitlist[]
-}
-
-enum Role {
-  CUSTOMER
-  STAFF
-  MANAGER
-  ADMIN
 }
