@@ -22,6 +22,8 @@ model Restaurant {
   tables        Table[]
   menuItems     MenuItem[]
   reservations  Reservation[]
+  reviews       Review[]
+  waitlists     Waitlist[]
 }
 
 model Table {
@@ -215,7 +217,7 @@ model User {
   reservations  Reservation[]
   orders        Order[]
   reviews       Review[]
-  waitlist      Waitlist[]
+  waitlists     Waitlist[]
 }
 
 enum Role {
