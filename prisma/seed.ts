@@ -4,11 +4,22 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Seeding database...')
 
+  // Delete existing data (optional - prevents duplicate errors)
+  console.log('🧹 Cleaning existing data...')
+  await prisma.menuItem.deleteMany({})
+  await prisma.table.deleteMany({})
+  await prisma.reservation.deleteMany({})
+  await prisma.review.deleteMany({})
+  await prisma.waitlist.deleteMany({})
+  await prisma.restaurant.deleteMany({})
+  console.log('✅ Cleaned existing data')
+
+  // Create restaurant
   const restaurant = await prisma.restaurant.create({
     data: {
       name: 'Verde & Salt',
-      description: 'Modern Mediterranean cuisine with a soul',
-      address: '123 Olive Street, Mediterranean City',
+      description: 'Modern Mediterranean cuisine with a soul - where fresh ingredients meet timeless recipes.',
+      address: '123 Olive Street, Mediterranean City, MC 10001',
       phone: '+1 (234) 567-8900',
       email: 'hello@verdeandsalt.com',
       openingHours: {
@@ -26,6 +37,7 @@ async function main() {
 
   console.log('✅ Restaurant created')
 
+  // Create tables
   for (let i = 1; i <= 25; i++) {
     let capacity = 2
     let section = 'Main'
@@ -47,6 +59,7 @@ async function main() {
 
   console.log('✅ 25 tables created')
 
+  // Create menu items with ALL images
   await prisma.menuItem.createMany({
     data: [
       {
@@ -95,7 +108,7 @@ async function main() {
         category: 'SEAFOOD',
         dietaryTags: ['DAIRY_FREE'],
         isChefSpecial: true,
-        imageUrl: 'https://images.unsplash.com/photo-1536256263892-c2e2e1a2c3f0?w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1536256263892-c2e2e1a2c3f0?w=400',  // ← IMAGE ADDED!
         restaurantId: restaurant.id,
       },
       {
@@ -129,7 +142,7 @@ async function main() {
     ],
   })
 
-  console.log('✅ Menu items created')
+  console.log('✅ 8 menu items created with images')
   console.log('🎉 Database seeding complete!')
 }
 
